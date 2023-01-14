@@ -2,7 +2,7 @@ provider "google" {
   project = var.project
   region  = var.region
   zone    = var.zone
-  credentials = file("/Users/samhiscox/tf-gcp/devops-practice-374517-5abc9ae28469.json")
+  credentials = file("/Users/samhiscox/keys/devops-374714-1e5569975382.json")
 }
 
 resource "google_compute_firewall" "firewall" {
@@ -52,9 +52,8 @@ resource "google_compute_firewall" "allow-https" {
   target_tags = ["https-server"]
 }
 
-
 resource "google_compute_instance" "dev" {
-  name         = "devserver"
+  name         = "jenkins-server"
   machine_type = "n2d-highcpu-8"
   zone         = "${var.region}-a"
   tags         = ["externalssh","webserver","https-server"]
@@ -62,9 +61,8 @@ resource "google_compute_instance" "dev" {
   boot_disk {
     initialize_params {
       image = "ubuntu-os-cloud/ubuntu-2204-lts"
-    }
+    }   
   }
-
 
   network_interface {
     network = "default"
@@ -79,7 +77,7 @@ resource "google_compute_instance" "dev" {
   # on the local linux box you are executing terraform
   # from.  The destination is on the new AWS instance.
   provisioner "file" {
-    source      = "/Users/samhiscox/tf-linux-gcp/software-installer.sh"
+    source      = "/Users/samhiscox/tf-gcp/software-installer.sh"
     destination = "/tmp/software-installer.sh"
 
     connection {
