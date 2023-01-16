@@ -4,7 +4,21 @@
 sudo apt-get update
 sudo apt install curl -y
 curl https://get.docker.com | sudo bash
+sudo useradd -m -s /bin/bash docker
 sudo usermod -aG sudo docker
+echo "docker installed successfully"
+echo "downloading k8s"
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+echo "k8s downloaded successfully, validating binary..."
+curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+echo "installing k8s"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+kubectl version --client
+kubectl cluster-info
+
+
+
 
 # Install jenkins and add jenkins user with permissions
 
